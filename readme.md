@@ -11,4 +11,9 @@ Here are all the parts that need to be worked on:
 - functions to made edits to a file
 - functions that accept input and responds to it (this one basically ties all the other ones together)
 
-Consult the document at the link above when you have a part to work on for exactly what you need to do. Hopefully each part is general enough to have no one step on each other's toes
+Consult the document at the link above when you have a part to work on for exactly what you need to do. Hopefully each part is general enough to have no one step on each other's toes  
+  
+Heads up: final is on May 1st at 4:15pm-6:15pm  
+  
+We need to get this done by April 28th so we can present to the teacher on the 29th or May 1st.
+
