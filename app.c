@@ -13,12 +13,26 @@ typedef struct Book {
 
 #define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = "none" };
 
-Book* getBooks() {
+/**
+*
+* Opens library.csv (included with the repo) and parses each row
+* into a Book struct. 
+*
+* @param booksCountArg - A pointer to an integer whose value will
+* 						 be changed to the number of books in the 
+* 						 array. This is mostly convenience so that 
+*						 no extra work will be required to call
+*						 saveBooks.
+*
+* @return Book* (pointer to array of books) 
+*
+**/
+Book* getBooks(int *booksCountArg) {
     FILE *inputfile;
 	inputfile = fopen("library.csv", "r");
 
     Book *allBooks = malloc(sizeof(Book));
-    int bookCount = 1;
+    int bookIterator = 1;
 	char buffer[256];
 	
     while (fgets(buffer, 256, inputfile)) {
@@ -52,15 +66,36 @@ Book* getBooks() {
 			index++;
 		}
 		
-		allBooks = realloc(allBooks, sizeof(Book) * bookCount);
-		allBooks[bookCount - 1] = book;
-		bookCount++;
+		allBooks = realloc(allBooks, sizeof(Book) * bookIterator);
+		allBooks[bookIterator - 1] = book;
+		bookIterator++;
     }
-
+	
 	fclose(inputfile);
+
+	*booksCountArg = bookCount;
 	return allBooks;
 }
 
+
+/**
+*
+* Overwrites library.csv and writes each book struct into its 
+* own line. Intended to be used with getBooks where you call
+* getBooks first, manipulate the array, and then call this method.
+* 
+* @param Book * - A pointer to the array of books, ideally gotten
+* 				  from the getBooks function.
+*
+* @param booksArraySize - The size of the books array from the
+*						  previous argument. The getBooks function
+*						  provides a way to get this - any additions
+*						  or subtractions to the array must be
+*						  accounted for manually.
+*
+* @return void
+*
+**/
 void saveBooks(Book *books, int booksArraySize) {
 	FILE *inputfile;
 	inputfile = fopen("library.csv", "w+");
