@@ -44,36 +44,62 @@
  * function(s) to edit rows
  *
  ****/ 
+void addBook() {
+    printf("add book");
+}
 
+void deleteBook() {
+    printf("delete book");
+}
+
+void checkoutBook() {
+    printf("checkout  book");
+}
+
+void returnBook() {
+    printf("return book");
+}
+
+void viewBookStatus() {
+    printf("view book status");
+}
+
+void viewBooksByAuthor() {
+    printf("view books by author");
+}
+
+void viewCheckedOutBooksByUser() {
+    printf("view checked out books by user");
+}
 
 void executeAction(char input) {
     switch(input) {
 	case 'a':
-	    printf("add book");
+	    addBook();
 	    break;
 
 	case 'd':
-	    printf("delete book");
+	    deleteBook();
 	    break;
 
 	case 'o':
-	    printf("check out a  book");
+	    checkoutBook();
 	    break;
 
 	case 'r':
-	    printf("return book");
+	    returnBook();
 	    break;
 
 	case 's':
-	    printf("status of book");
+	    viewBookStatus();
 	    break;
 
 	case 'q':
-	    printf("books from author");
+	    viewBooksByAuthor();
 	    break;
 
 	case 'u':
-	    printf("view books from user");
+	    viewCheckedOutBooksByUser();
 	    break;
     }
 }
@@ -90,7 +116,7 @@ int main(void) {
 	
 	while ((input = getchar()) != '\n' && input != EOF) { 
 	    if (input == 'x') {
-		break;
+		goto end;
 	    }
 
 	    int i;
@@ -102,7 +128,8 @@ int main(void) {
 	    }			
 	}
     };
-
+    
+    end:
     printf("\n\nThanks for visiting the library!\n");
     return 0;
 }
