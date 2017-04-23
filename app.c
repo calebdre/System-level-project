@@ -1,16 +1,69 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-/****
- * 
- * function for basic file handing. Everyone should use this if they need to access the file
- *
- ****/
+typedef struct Book {
+    char *id;
+    char *name;
+    char *author;
+    char *possession;
+    char *checkedOutAt;
+    char *dueDate;
+} Book;
 
+#define EMPTY_BOOK(X) Book X = { .id = 0, .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = "none" };
 
+Book* getBooks() {
+    FILE *inputfile;
+	inputfile = fopen("library.csv", "r");
 
+    Book *allBooks = malloc(sizeof(Book));
+    int bookCount = 1;
+	char buffer[256];
+	
+    while (fgets(buffer, 256, inputfile)) {
+		int index = 0;
+		char *token;
+		EMPTY_BOOK(book);
+		char *copy = strdup(buffer);
+		
+		while((token = strsep(&copy, ","))) {
+			switch (index) {
+			case 0:
+				book.id = token;
+				break;
+			case 1:
+				book.name = token;
+				break;
+			case 2:
+				book.author = token;
+				break;
+			case 3:
+				book.possession = token;
+				break;
+			case 4:
+				book.checkedOutAt = token;
+				break;
+			case 5:
+				book.dueDate = token;
+				break;
+			}
 
+			index++;
+		}
+		
+		allBooks = realloc(allBooks, sizeof(Book) * bookCount);
+		allBooks[bookCount - 1] = book;
+		bookCount++;
+    }
 
+	fclose(inputfile);
+	return allBooks;
+}
 
+void saveBooks(Book *books) {
+
+}
 
 
 
@@ -44,8 +97,10 @@
  * function(s) to edit rows
  *
  ****/ 
+
+
 void addBook() {
-    printf("add book");
+	print("add book");
 }
 
 void deleteBook() {
@@ -104,7 +159,6 @@ void executeAction(char input) {
     }
 }
 
-
 int main(void) {
     printf("Welcome to the library!");
     char allowedCharacters[] = {'a','d','o','r','s','q','u'};
@@ -133,3 +187,4 @@ int main(void) {
     printf("\n\nThanks for visiting the library!\n");
     return 0;
 }
+
