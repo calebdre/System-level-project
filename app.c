@@ -2,6 +2,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+/**
+* This is a compact representation of the data
+* that should be written and read into library.csv.
+* Use this whenever you want to represent that data
+* in the code.
+**/
 typedef struct Book {
     char *id;
     char *name;
@@ -11,6 +17,15 @@ typedef struct Book {
     char *dueDate;
 } Book;
 
+/**
+* Use this if you don't have all of the information
+* to create a Book struct yet but want to build up
+* the data structure. 
+*
+* USAGE:
+* EMPTY_BOOK(book)
+* book.name = "book name"; // the book variable now exists
+**/
 #define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = "none" };
 
 /**
@@ -18,11 +33,11 @@ typedef struct Book {
 * Opens library.csv (included with the repo) and parses each row
 * into a Book struct. 
 *
-* @param booksCountArg - A pointer to an integer whose value will
-* 						 be changed to the number of books in the 
-* 						 array. This is mostly convenience so that 
-*						 no extra work will be required to call
-*						 saveBooks.
+* @param booksCountArg int* - A pointer to an integer whose value will
+* 						  	  be changed to the number of books in the 
+* 						  	  array. This is mostly convenience so that 
+*						 	  no extra work will be required to call
+*						  	  saveBooks.
 *
 * @return Book* (pointer to array of books) 
 *
@@ -84,10 +99,10 @@ Book* getBooks(int *booksCountArg) {
 * own line. Intended to be used with getBooks where you call
 * getBooks first, manipulate the array, and then call this method.
 * 
-* @param Book * - A pointer to the array of books, ideally gotten
+* @param books Book* - A pointer to the array of books, ideally gotten
 * 				  from the getBooks function.
 *
-* @param booksArraySize - The size of the books array from the
+* @param booksArraySize int - The size of the books array from the
 *						  previous argument. The getBooks function
 *						  provides a way to get this - any additions
 *						  or subtractions to the array must be
