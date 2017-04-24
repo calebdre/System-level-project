@@ -34,62 +34,62 @@ typedef struct Book {
 * into a Book struct. 
 *
 * @param booksCountArg int* - A pointer to an integer whose value will
-* 						  	  be changed to the number of books in the 
-* 						  	  array. This is mostly convenience so that 
-*						 	  no extra work will be required to call
-*						  	  saveBooks.
+* 			      be changed to the number of books in the 
+* 		  	      array. This is mostly convenience so that 
+*			      no extra work will be required to call
+*			      saveBooks.
 *
 * @return Book* (pointer to array of books) 
 *
 **/
 Book* getBooks(int *booksCountArg) {
     FILE *inputfile;
-	inputfile = fopen("library.csv", "r");
+    inputfile = fopen("library.csv", "r");
 
     Book *allBooks = malloc(sizeof(Book));
     int bookIterator = 1;
-	char buffer[256];
+    char buffer[256];
 	
     while (fgets(buffer, 256, inputfile)) {
-		int index = 0;
-		char *token;
-		EMPTY_BOOK(book);
-		char *copy = strdup(buffer);
+	int index = 0;
+	char *token;
+	EMPTY_BOOK(book);
+	char *copy = strdup(buffer);
 		
-		while((token = strsep(&copy, ","))) {
-			switch (index) {
-			case 0:
-				book.id = token;
-				break;
-			case 1:
-				book.name = token;
-				break;
-			case 2:
-				book.author = token;
-				break;
-			case 3:
-				book.possession = token;
-				break;
-			case 4:
-				book.checkedOutAt = token;
-				break;
-			case 5:
-				book.dueDate = token;
-				break;
-			}
+	while((token = strsep(&copy, ","))) {
+	    switch (index) {
+		case 0:
+			book.id = token;
+			break;
+		case 1:
+			book.name = token;
+			break;
+		case 2:
+			book.author = token;
+			break;
+		case 3:
+			book.possession = token;
+			break;
+		case 4:
+			book.checkedOutAt = token;
+			break;
+		case 5:
+			book.dueDate = token;
+			break;
+	    }
 
-			index++;
-		}
-		
-		allBooks = realloc(allBooks, sizeof(Book) * bookIterator);
-		allBooks[bookIterator - 1] = book;
-		bookIterator++;
+	    index++;
+	}
+	
+	allBooks = realloc(allBooks, sizeof(Book) * bookIterator);
+	allBooks[bookIterator - 1] = book;
+	bookIterator++;
     }
 	
-	fclose(inputfile);
+    fclose(inputfile);
 
-	*booksCountArg = bookCount;
-	return allBooks;
+    *booksCountArg = bookCount;
+    return allBooks;
 }
 
 
@@ -100,36 +100,36 @@ Book* getBooks(int *booksCountArg) {
 * getBooks first, manipulate the array, and then call this method.
 * 
 * @param books Book* - A pointer to the array of books, ideally gotten
-* 				  from the getBooks function.
+* 		       from the getBooks function.
 *
 * @param booksArraySize int - The size of the books array from the
-*						  previous argument. The getBooks function
-*						  provides a way to get this - any additions
-*						  or subtractions to the array must be
-*						  accounted for manually.
+*			      previous argument. The getBooks function
+*			      provides a way to get this - any additions
+*			      or subtractions to the array must be
+*			      accounted for manually.
 *
 * @return void
 *
 **/
 void saveBooks(Book *books, int booksArraySize) {
-	FILE *inputfile;
-	inputfile = fopen("library.csv", "w+");
-	int i;
-	for (i = 0; i < booksArraySize; i++){
-		fprintf(inputfile, "%s,%s,%s,%s,%s,%s\n", 
-			books[i].id,
-			books[i].name,
-			books[i].author,
-			books[i].possession,
-			books[i].checkedOutAt,
-			books[i].dueDate);
-	}
+    FILE *inputfile;
+    inputfile = fopen("library.csv", "w+");
+    int i;
+    for (i = 0; i < booksArraySize; i++){
+	fprintf(inputfile, "%s,%s,%s,%s,%s,%s\n", 
+	    books[i].id,
+	    books[i].name,
+	    books[i].author,
+	    books[i].possession,
+	    books[i].checkedOutAt,
+	    books[i].dueDate);
+    }
 
-	fclose(inputfile);
+    fclose(inputfile);
 }
 
 void addBook() {
-	printf("add a book");
+    printf("add a book");
 }
 
 void deleteBook() {
@@ -194,22 +194,22 @@ int main(void) {
     char input;
 
     while(1) {
-		printf("\n\nWhat would you like to do?\n");
-		printf("(a) add a book \n(d) delete a book \n(o) check out a book\n(r) return a book\n(s) check the status of a book\n(q) view books written by an author\n(u) view books checked out by a given user.\n(x) quit\n\n");
+	printf("\n\nWhat would you like to do?\n");
+	printf("(a) add a book \n(d) delete a book \n(o) check out a book\n(r) return a book\n(s) check the status of a book\n(q) view books written by an author\n(u) view books checked out by a given user.\n(x) quit\n\n");
 		
-		while ((input = getchar()) != '\n' && input != EOF) { 
-			if (input == 'x') {
-				goto end;
-			}
+	while ((input = getchar()) != '\n' && input != EOF) { 
+	    if (input == 'x') {
+	        goto end;
+	    }
 
-			int i;
-			for (i = 0; i < sizeof(allowedCharacters) / sizeof(allowedCharacters[0]); i++){
-				if (allowedCharacters[i] == input) {
-					executeAction(input);
-					break;
-				}
-			}		
-		}
+	    int i;
+	    for (i = 0; i < sizeof(allowedCharacters) / sizeof(allowedCharacters[0]); i++){
+	        if (allowedCharacters[i] == input) {
+	            executeAction(input);
+		    break;
+	        }
+	    }		
+	}
     };
     
     end:
