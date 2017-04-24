@@ -129,6 +129,7 @@ void saveBooks(Book *books, int booksArraySize) {
 }
 
 /**
+ *
 * Prompts the user for input and returns what they entered. 
 * You can pass in whether a list of characters that the user
 * is allowed to enter and will keep re-prompting them until
@@ -145,6 +146,7 @@ void saveBooks(Book *books, int booksArraySize) {
 * 			       This won't be used if allowedChars is NULL.
 *
 * @return char* - The character or string the user passed in.
+*
 **/
 char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
     do {
