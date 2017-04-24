@@ -88,7 +88,7 @@ Book* getBooks(int *booksCountArg) {
 	
     fclose(inputfile);
 
-    *booksCountArg = bookCount;
+    *booksCountArg = bookIterator;
     return allBooks;
 }
 
@@ -128,6 +128,37 @@ void saveBooks(Book *books, int booksArraySize) {
     fclose(inputfile);
 }
 
+char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
+    do {
+	
+	if (allowedChars == NULL) {
+	    printf("%s\n", prompt);
+            char input[75];
+            scanf("%s", input);
+	    int i;
+	    for(i = 0; i < strlen(input);i++){
+		if (input[i] == '\n') {
+		    input[i] = ' ';
+		    break;
+		}
+	    }
+	   
+	    return strdup(input);
+	} else {
+	    char input;
+	    printf("%s\n", prompt);
+	    while ((input = getchar()) != '\n' && input != EOF) { 
+		int i;
+		for(i = 0; i < allowedCharsSize; i++) {
+		    if (allowedChars[i] == input) {
+			return strdup(&input);
+		    }
+		}
+	    }
+	}
+    }while(1);
+}
+
 void addBook() {
     printf("add a book");
 }
@@ -137,7 +168,7 @@ void deleteBook() {
 }
 
 void checkoutBook() {
-    printf("checkout  book");
+    printf("checkout a book");
 }
 
 void returnBook() {
