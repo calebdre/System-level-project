@@ -128,9 +128,26 @@ void saveBooks(Book *books, int booksArraySize) {
     fclose(inputfile);
 }
 
+/**
+* Prompts the user for input and returns what they entered. 
+* You can pass in whether a list of characters that the user
+* is allowed to enter and will keep re-prompting them until
+* they choose an option. 
+*
+* @param prompt char* - The string that should be printed to 
+* 			the user before input is accepted.
+* 
+* @param allowedChars char* - A pointer to an array of characters.
+* 			      If the user can enter anything, pass
+* 			      in NULL.
+*
+* @param allowedCharSize int - The number of characters in allowedChars. 
+* 			       This won't be used if allowedChars is NULL.
+*
+* @return char* - The character or string the user passed in.
+**/
 char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
     do {
-	
 	if (allowedChars == NULL) {
 	    printf("%s\n", prompt);
             char input[75];
