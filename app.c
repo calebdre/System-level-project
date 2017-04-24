@@ -149,7 +149,7 @@ void saveBooks(Book *books, int booksArraySize) {
 *
 **/
 char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
-    do {
+    while(1){
 	if (allowedChars == NULL) {
 	    printf("%s\n", prompt);
             char input[75];
@@ -164,21 +164,25 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 	   
 	    return strdup(input);
 	} else {
-	    char input;
+	    char input[2];
 	    printf("%s\n", prompt);
-	    while ((input = getchar()) != '\n' && input != EOF) { 
+	    while ((input[0] = getchar()) != '\n' && input[0] != EOF) { 
 		int i;
 		for(i = 0; i < allowedCharsSize; i++) {
-		    if (allowedChars[i] == input) {
-			return strdup(&input);
+		    if (allowedChars[i] == input[0]) {
+			input[1] = '\0';
+			return strdup(input);
 		    }
 		}
 	    }
 	}
-    }while(1);
+    }
 }
 
 void addBook() {
+    char r[] = {'a','b'};
+    char *f = propmtUser("user", r, 2);
+    printf("%s\n", f);
     printf("add a book");
 }
 
