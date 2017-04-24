@@ -164,7 +164,7 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 	   
 	    return strdup(input);
 	} else {
-	    char input[2];
+	    char input[2] = {'\0','\0'};
 	    printf("%s\n", prompt);
 	    while ((input[0] = getchar()) != '\n' && input[0] != EOF) { 
 		int i;
@@ -180,9 +180,6 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 }
 
 void addBook() {
-    char r[] = {'a','b'};
-    char *f = propmtUser("user", r, 2);
-    printf("%s\n", f);
     printf("add a book");
 }
 
