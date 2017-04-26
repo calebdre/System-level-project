@@ -196,31 +196,46 @@ void viewBookStatus() {
     printf("view book status");
 }
 
-Book* viewBooksByAuthor() {
+Book* viewBooksByAuthor(char *searchAuthor) {
     printf("view books by author: ");
     int size;
     Book *allBooks = getBooks(&size);
-	char searchAuthor[256];
-	scanf("%s" , &searchAuthor);
+	if ((strcmp(searchAuthor, "ask_user") != 0)){
+		scanf("%s" , &searchAuthor);
+	}
 	Book *searchedBooks = malloc(sizeof(Book));
 	int count = 0;
     for (int i=0; i<size-1; i++){
-    	printf("%d\n", i);
-    	printf("%s\n", allBooks[i].name);
-    	printf("%s\n", allBooks[i].author);
     	if (strcmp(allBooks[i].author, searchAuthor) != 0){
     		printf("%s, %s\n", allBooks[i].name, allBooks[i].author);
     		count++;
     		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
     		searchedBooks[size - 1] = allBooks[i];
-
     	}
     }
     return searchedBooks;
 }
 
-void viewCheckedOutBooksByUser() {
+Book* viewCheckedOutBooksByUser(char *searchUser) {
     printf("view checked out books by user");
+    int size;
+    Book *allBooks = getBooks(&size);
+	char searchUser[256];
+	if ((strcmp(searchUser, "ask_user") != 0)){
+		scanf("%s" , &searchUser);
+	}
+	scanf("%s" , &searchUser);
+	Book *searchedBooks = malloc(sizeof(Book));
+	int count = 0;
+    for (int i=0; i<size-1; i++){
+    	if (strcmp(allBooks[i].possession, searchUser) != 0){
+    		printf("%s, %s\n", allBooks[i].name, allBooks[i].author);
+    		count++;
+    		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
+    		searchedBooks[size - 1] = allBooks[i];
+    	}
+    }
+    return searchedBooks;
 }
 
 void executeAction(char input) {
@@ -246,11 +261,11 @@ void executeAction(char input) {
 	    break;
 
 	case 'q':
-	    viewBooksByAuthor();
+	    viewBooksByAuthor("ask_user");
 	    break;
 
 	case 'u':
-	    viewCheckedOutBooksByUser();
+	    viewCheckedOutBooksByUser("ask_user");
 	    break;
     }
 }
