@@ -192,8 +192,24 @@ void returnBook() {
     printf("return book");
 }
 
-void viewBookStatus() {
+Book* viewBookStatus(char *searchBook) {
     printf("view book status");
+    int size;
+    Book *allBooks = getBooks(&size);
+	if ((strcmp(searchBook, "ask_user") != 0)){
+		scanf("%s" , searchBook);
+	}
+	Book *searchedBooks = malloc(sizeof(Book));
+	int count = 0;
+    for (int i=0; i<size-1; i++){
+    	if (strcmp(allBooks[i].possession, "Library") == 1){
+    		printf("%s, %s, %s\n", allBooks[i].name, allBooks[i].author, allBooks[i].possession);
+    		count++;
+    		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
+    		searchedBooks[size - 1] = allBooks[i];
+    	}
+    }
+    return searchedBooks;
 }
 
 Book* viewBooksByAuthor(char *searchAuthor) {
@@ -201,7 +217,7 @@ Book* viewBooksByAuthor(char *searchAuthor) {
     int size;
     Book *allBooks = getBooks(&size);
 	if ((strcmp(searchAuthor, "ask_user") != 0)){
-		scanf("%s" , &searchAuthor);
+		scanf("%s" , searchAuthor);
 	}
 	Book *searchedBooks = malloc(sizeof(Book));
 	int count = 0;
@@ -216,19 +232,21 @@ Book* viewBooksByAuthor(char *searchAuthor) {
     return searchedBooks;
 }
 
-Book* viewCheckedOutBooksByUser(char *searchUser) {
-    printf("view checked out books by user");
+Book* viewCheckedOutBooksByUser(const char *searchUser) {
+    printf("view checked out books by user: \n");
     int size;
+    char buffer[64];
     Book *allBooks = getBooks(&size);
-	char searchUser[256];
-	if ((strcmp(searchUser, "ask_user") != 0)){
-		scanf("%s" , &searchUser);
+	if ((strcmp(searchUser, "ask_user") == 0)){
+		scanf("%s" , searchUser);
+	} else {
+		strcpy(buffer, searchUser);
 	}
-	scanf("%s" , &searchUser);
+	printf("%d\n", 1);
 	Book *searchedBooks = malloc(sizeof(Book));
 	int count = 0;
     for (int i=0; i<size-1; i++){
-    	if (strcmp(allBooks[i].possession, searchUser) != 0){
+    	if (strcmp(allBooks[i].possession, searchUser) == 0){
     		printf("%s, %s\n", allBooks[i].name, allBooks[i].author);
     		count++;
     		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
@@ -257,7 +275,7 @@ void executeAction(char input) {
 	    break;
 
 	case 's':
-	    viewBookStatus();
+	    viewBookStatus("ask_user");
 	    break;
 
 	case 'q':
