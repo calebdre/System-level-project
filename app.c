@@ -56,30 +56,30 @@ Book* getBooks(int *booksCountArg) {
 	EMPTY_BOOK(book);
 	char *copy = strdup(buffer);
 		
-	while((token = strsep(&copy, ","))) {
-	    switch (index) {
-		case 0:
-			book.id = token;
-			break;
-		case 1:
-			book.name = token;
-			break;
-		case 2:
-			book.author = token;
-			break;
-		case 3:
-			book.possession = token;
-			break;
-		case 4:
-			book.checkedOutAt = token;
-			break;
-		case 5:
-			book.dueDate = token;
-			break;
-	    }
+		while((token = strsep(&copy, ","))) {
+		    switch (index) {
+			case 0:
+				book.id = token;
+				break;
+			case 1:
+				book.name = token;
+				break;
+			case 2:
+				book.author = token;
+				break;
+			case 3:
+				book.possession = token;
+				break;
+			case 4:
+				book.checkedOutAt = token;
+				break;
+			case 5:
+				book.dueDate = token;
+				break;
+		    }
 
-	    index++;
-	}
+		    index++;
+		}
 	
 	allBooks = realloc(allBooks, sizeof(Book) * bookIterator);
 	allBooks[bookIterator - 1] = book;
@@ -195,16 +195,77 @@ void returnBook() {
     printf("return book");
 }
 
-void viewBookStatus() {
-    printf("view book status");
+Book* viewBookStatus(char *searchBook) {
+    printf("View book status: ");
+    int size;
+    char buffer[64];
+    Book *allBooks = getBooks(&size);
+	if ((strcmp(searchBook, "ask_user") == 0)){
+		scanf("%s" , buffer);
+	} else {
+		strcpy(buffer, searchBook);
+	}
+	Book *searchedBooks = malloc(sizeof(Book));
+	int count = 0;
+    for (int i=0; i<size-1; i++){
+    	if (strcmp(allBooks[i].name, buffer) == 0) {
+	    	if (strcmp(allBooks[i].possession, "Library") == 0){
+	    		printf("%s, %s, STATUS: IN\n", allBooks[i].name, allBooks[i].author);
+	    	} else {
+	    		printf("%s, %s, STATUS: IN, POSSESSION: %s\n", allBooks[i].name, allBooks[i].author, allBooks[i].possession);
+	    	}
+	    	count++;
+	    	searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
+	    	searchedBooks[size - 1] = allBooks[i];
+	    }
+    }
+    return searchedBooks;
 }
 
-void viewBooksByAuthor() {
-    printf("view books by author");
+Book* viewBooksByAuthor(const char *searchAuthor) {
+    printf("view books by author: ");
+    int size;
+    char buffer[64];
+    Book *allBooks = getBooks(&size);
+	if ((strcmp(searchAuthor, "ask_user") == 0)){
+		scanf("%s", buffer);
+	} else {
+		strcpy(buffer, searchAuthor);
+	}
+	Book *searchedBooks = malloc(sizeof(Book));
+	int count = 0;
+    for (int i=0; i<size-1; i++){
+    	if (strcmp(allBooks[i].author, buffer) == 0){
+    		printf("%s, %s\n", allBooks[i].name, allBooks[i].author);
+    		count++;
+    		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
+    		searchedBooks[size - 1] = allBooks[i];
+    	}
+    }
+    return searchedBooks;
 }
 
-void viewCheckedOutBooksByUser() {
-    printf("view checked out books by user");
+Book* viewCheckedOutBooksByUser(const char *searchUser) {
+    printf("view checked out books by user: \n");
+    int size;
+    char buffer[64];
+    Book *allBooks = getBooks(&size);
+	if ((strcmp(searchUser, "ask_user") == 0)){
+		scanf("%s", buffer);
+	} else {
+		strcpy(buffer, searchUser);
+	}
+	Book *searchedBooks = malloc(sizeof(Book));
+	int count = 0;
+    for (int i=0; i<size-1; i++){
+    	if (strcmp(allBooks[i].possession, buffer) == 0){
+    		printf("%s, %s\n", allBooks[i].name, allBooks[i].author);
+    		count++;
+    		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
+    		searchedBooks[size - 1] = allBooks[i];
+    	}
+    }
+    return searchedBooks;
 }
 
 void executeAction(char input) {
@@ -226,15 +287,15 @@ void executeAction(char input) {
 	    break;
 
 	case 's':
-	    viewBookStatus();
+	    viewBookStatus("ask_user");
 	    break;
 
 	case 'q':
-	    viewBooksByAuthor();
+	    viewBooksByAuthor("ask_user");
 	    break;
 
 	case 'u':
-	    viewCheckedOutBooksByUser();
+	    viewCheckedOutBooksByUser("ask_user");
 	    break;
     }
 }
