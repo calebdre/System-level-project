@@ -99,6 +99,8 @@ Book* getBooks(int *booksCountArg) {
 * own line. Intended to be used with getBooks where you call
 * getBooks first, manipulate the array, and then call this method.
 * 
+* Note that that this will release the books away from memory
+*
 * @param books Book* - A pointer to the array of books, ideally gotten
 * 		       from the getBooks function.
 *
@@ -126,6 +128,7 @@ void saveBooks(Book *books, int booksArraySize) {
     }
 
     fclose(inputfile);
+    free(books);
 }
 
 /**
@@ -179,12 +182,36 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
     }
 }
 
+Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySize, int *bookIndex) {
+    
+}
+
 void addBook() {
     printf("add a book");
 }
 
 void deleteBook() {
-    printf("delete book");
+    int *numOfbooks;
+    Book *books = getBooks(numOfbooks);
+    while(true) {
+        char *bookId = promptUser("Please enter the book ID", NULL, 0);
+	int *bookIndex;
+        Book *searchResult = NULL; // todo: integrate search
+        if (search != NULL) {
+	    books[*bookIndex] = books[*numOfBooks - 1];
+ 	    realloc(books, sizeof(Book) * (*numOfBooks - 1));
+	} else {
+   	    printf("No such book!");
+	}
+	
+	char *allowedChars[] = {'t','b'};
+	char *response = promptUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
+	if (response[0] == 't') {
+	    continue;
+	} else {
+	    break;
+	}
+    }
 }
 
 void checkoutBook() {
@@ -192,7 +219,16 @@ void checkoutBook() {
 }
 
 void returnBook() {
-    printf("return book");
+    int *numOfBooks;
+    Book *books = getBooks(numOfBooks);
+    while(true) {
+	char *bookId = promptUser("Please enter the book ID", null, 0);
+	Book *searchResult = NULL; // todo: integrate search
+	if (searchResult == NULL) {
+	    char *currentDate = promptUser("Please enter the current date (mm/dd/yyy)\n", NULL, 0);
+
+	}
+    }
 }
 
 Book* viewBookStatus(char *searchBook) {
