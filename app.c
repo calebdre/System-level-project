@@ -18,6 +18,13 @@ typedef struct Book {
 } Book;
 
 /**
+* Define boolean
+**/
+typedef int bool;
+#define true 1
+#define false 0
+
+/**
 * Use this if you don't have all of the information
 * to create a Book struct yet but want to build up
 * the data structure. 
@@ -236,7 +243,7 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySiz
 
 
 void addBook() {
-    printf("add a book");
+	printf("add book");
 }
 
 // void deleteBook() {
