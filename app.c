@@ -182,80 +182,123 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
     }
 }
 
-Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySize, int *bookIndex) {
-    
+//To return all of that index, pass "" (empty string) for query
+Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySize) {
+	Book *searchedBooks = malloc(sizeof(Book));
+	int count = 0;
+	for (int i=0; i<booksArraySize-1; i++){
+		printf("i is %d\n", i);
+		int addBook = 0;
+		if (strcmp(query, "") == 0){
+	    	addBook = 1;
+	    }
+	    switch(fieldIndex){
+	    	case 0:
+	    		if (strcmp(booksToSearch[i].id, query) == 0){
+	    			addBook = 1;
+	    		}
+				break;
+			case 1:
+				if (strcmp(booksToSearch[i].name, query) == 0){
+					addBook = 1;
+				}
+				break;
+			case 2:
+				if (strcmp(booksToSearch[i].author, query) == 0){
+					addBook = 1;
+				}
+				break;
+			case 3:
+				if (strcmp(booksToSearch[i].possession, query) == 0){
+					addBook = 1;
+				}
+				break;
+			case 4:
+				if (strcmp(booksToSearch[i].checkedOutAt, query) == 0){
+					addBook = 1;
+				}
+				break;
+			case 5:
+				if (strcmp(booksToSearch[i].dueDate, query) == 0){
+					addBook = 1;
+				}
+				break;
+	    }
+	    if (addBook != 0){
+	    	count++;
+    		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
+    		searchedBooks[count - 1] = booksToSearch[i];
+    	}
+	}
+	return searchedBooks;
+
 }
+
 
 void addBook() {
     printf("add a book");
 }
 
-void deleteBook() {
-    int *numOfbooks;
-    Book *books = getBooks(numOfbooks);
-    while(true) {
-        char *bookId = promptUser("Please enter the book ID", NULL, 0);
-	int *bookIndex;
-        Book *searchResult = NULL; // todo: integrate search
-        if (search != NULL) {
-	    books[*bookIndex] = books[*numOfBooks - 1];
- 	    realloc(books, sizeof(Book) * (*numOfBooks - 1));
-	} else {
-   	    printf("No such book!");
-	}
+// void deleteBook() {
+//     int *numOfbooks;
+//     Book *books = getBooks(numOfbooks);
+//     while(1) {
+//         char *bookId = promptUser("Please enter the book ID", NULL, 0);
+// 	int *bookIndex;
+//         Book *searchResult = NULL; // todo: integrate search
+//         if (search != NULL) {
+// 	    books[*bookIndex] = books[*numOfbooks - 1];
+//  	    realloc(books, sizeof(Book) * (*numOfbooks - 1));
+// 	} else {
+//    	    printf("No such book!");
+// 	}
 	
-	char *allowedChars[] = {'t','b'};
-	char *response = promptUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
-	if (response[0] == 't') {
-	    continue;
-	} else {
-	    break;
-	}
-    }
-}
+// 	char *allowedChars[] = {'t','b'};
+// 	char *response = promptUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
+// 	if (response[0] == 't') {
+// 	    continue;
+// 	} else {
+// 	    break;
+// 	}
+//     }
+// }
 
 void checkoutBook() {
     printf("checkout a book");
 }
 
-void returnBook() {
-    int *numOfBooks;
-    Book *books = getBooks(numOfBooks);
-    while(true) {
-	char *bookId = promptUser("Please enter the book ID", null, 0);
-	Book *searchResult = NULL; // todo: integrate search
-	if (searchResult == NULL) {
-	    char *currentDate = promptUser("Please enter the current date (mm/dd/yyy)\n", NULL, 0);
+// void returnBook() {
+//     int *numOfBooks;
+//     Book *books = getBooks(numOfBooks);
+//     while(1) {
+// 	char *bookId = promptUser("Please enter the book ID", NULL, 0);
+// 	Book *searchResult = NULL; // todo: integrate search
+// 	if (searchResult == NULL) {
+// 	    char *currentDate = promptUser("Please enter the current date (mm/dd/yyy)\n", NULL, 0);
 
-	}
-    }
-}
+// 	}
+//     }
+// }
 
-Book* viewBookStatus(char *searchBook) {
+void viewBookStatus() {
     printf("View book status: ");
     int size;
     char buffer[64];
-    Book *allBooks = getBooks(&size);
-	if ((strcmp(searchBook, "ask_user") == 0)){
-		scanf("%s" , buffer);
-	} else {
-		strcpy(buffer, searchBook);
-	}
-	Book *searchedBooks = malloc(sizeof(Book));
+    Book *allBooks = search(3, "", getBooks(&size), size);
 	int count = 0;
-    for (int i=0; i<size-1; i++){
-    	if (strcmp(allBooks[i].name, buffer) == 0) {
-	    	if (strcmp(allBooks[i].possession, "Library") == 0){
-	    		printf("%s, %s, STATUS: IN\n", allBooks[i].name, allBooks[i].author);
-	    	} else {
-	    		printf("%s, %s, STATUS: IN, POSSESSION: %s\n", allBooks[i].name, allBooks[i].author, allBooks[i].possession);
-	    	}
-	    	count++;
-	    	searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
-	    	searchedBooks[size - 1] = allBooks[i];
-	    }
+	printf("We in VIEWBOOK\n");
+	printf("Size of allBooks %d\n", sizeof(allBooks)/sizeof(Book));
+    for (int i=0; i<size-2; i++){
+    	printf("VB LOOP %d\n", i);
+    	printf("%d\n", i);
+    	if (strcmp(allBooks[i].possession, "Library") == 0){
+    		printf("We checked\n");
+    		printf("%s, %s, STATUS: IN\n", allBooks[i].name, allBooks[i].author);
+    	} else {
+    		printf("%s, %s, STATUS: IN, POSSESSION: %s\n", allBooks[i].name, allBooks[i].author, allBooks[i].possession);
+    	}
+	
     }
-    return searchedBooks;
 }
 
 Book* viewBooksByAuthor(const char *searchAuthor) {
@@ -272,7 +315,6 @@ Book* viewBooksByAuthor(const char *searchAuthor) {
 	int count = 0;
     for (int i=0; i<size-1; i++){
     	if (strcmp(allBooks[i].author, buffer) == 0){
-    		printf("%s, %s\n", allBooks[i].name, allBooks[i].author);
     		count++;
     		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
     		searchedBooks[size - 1] = allBooks[i];
@@ -307,23 +349,23 @@ Book* viewCheckedOutBooksByUser(const char *searchUser) {
 void executeAction(char input) {
     switch(input) {
 	case 'a':
-	    addBook();
+	    //addBook();
 	    break;
 
 	case 'd':
-	    deleteBook();
+	    //deleteBook();
 	    break;
 
 	case 'o':
-	    checkoutBook();
+	    //checkoutBook();
 	    break;
 
 	case 'r':
-	    returnBook();
+	    //returnBook();
 	    break;
 
 	case 's':
-	    viewBookStatus("ask_user");
+	    viewBookStatus();
 	    break;
 
 	case 'q':
