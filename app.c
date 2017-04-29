@@ -85,7 +85,7 @@ Book* getBooks(int *booksCountArg) {
 	allBooks[bookIterator - 1] = book;
 	bookIterator++;
     }
-	
+
     fclose(inputfile);
 
     *booksCountArg = bookIterator;
@@ -154,7 +154,7 @@ void saveBooks(Book *books, int booksArraySize) {
 char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
     while(1){
 	if (allowedChars == NULL) {
-	    printf("%s\n", prompt);
+	    printf("%s", prompt);
             char input[75];
             scanf("%s", input);
 	    int i;
@@ -242,7 +242,6 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySiz
 		searchedBooks[count - 1] = empty;
 	}
 	return searchedBooks;
-
 }
 
 
@@ -250,46 +249,48 @@ void addBook() {
     printf("add a book");
 }
 
-// void deleteBook() {
-//     int *numOfbooks;
-//     Book *books = getBooks(numOfbooks);
-//     while(1) {
-//         char *bookId = promptUser("Please enter the book ID", NULL, 0);
-// 	int *bookIndex;
-//         Book *searchResult = NULL; // todo: integrate search
-//         if (search != NULL) {
-// 	    books[*bookIndex] = books[*numOfbooks - 1];
-//  	    realloc(books, sizeof(Book) * (*numOfbooks - 1));
-// 	} else {
-//    	    printf("No such book!");
-// 	}
+ void deleteBook() {
+     int numOfbooks;
+     Book *books = getBooks(&numOfbooks);
+     while(1) {
+        char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
+ 	int *bookIndex;
+        Book *searchResult = NULL; //search(0, bookId, books, *numOfbooks); // todo: integrate search
+        if (searchResult != NULL) {
+ 	    books[*bookIndex] = books[numOfbooks - 1];
+  	    books = realloc(books, sizeof(Book) * (numOfbooks - 1));
+ 	} else {
+    	    printf("No such book!\n");
+ 	}
 	
-// 	char *allowedChars[] = {'t','b'};
-// 	char *response = promptUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
-// 	if (response[0] == 't') {
-// 	    continue;
-// 	} else {
-// 	    break;
-// 	}
-//     }
-// }
+ 	char allowedChars[] = {'t','b'};
+ 	char *response = propmtUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
+ 	if (response[0] == 't') {
+ 	    continue;
+ 	} else {
+ 	    break;
+ 	}
+     }
+ }
 
 void checkoutBook() {
     printf("checkout a book");
 }
 
-// void returnBook() {
-//     int *numOfBooks;
-//     Book *books = getBooks(numOfBooks);
-//     while(1) {
-// 	char *bookId = promptUser("Please enter the book ID", NULL, 0);
-// 	Book *searchResult = NULL; // todo: integrate search
-// 	if (searchResult == NULL) {
-// 	    char *currentDate = promptUser("Please enter the current date (mm/dd/yyy)\n", NULL, 0);
+ void returnBook() {
+	 printf("return book");
+/*     int *numOfBooks;
+     Book *books = getBooks(numOfBooks);
+     while(1) {
+ 	char *bookId = promptUser("Please enter the book ID", NULL, 0);
+ 	Book *searchResult = NULL; // todo: integrate search
+ 	if (searchResult == NULL) {
+ 	    char *currentDate = promptUser("Please enter the current date (mm/dd/yyy)\n", NULL, 0);
 
-// 	}
-//     }
-// }
+ 	}
+     }
+*/
+}
 
 void viewBookStatus() {
     printf("View book status: ");
@@ -357,19 +358,19 @@ Book* viewCheckedOutBooksByUser(const char *searchUser) {
 void executeAction(char input) {
     switch(input) {
 	case 'a':
-	    //addBook();
+	    addBook();
 	    break;
 
 	case 'd':
-	    //deleteBook();
+	    deleteBook();
 	    break;
 
 	case 'o':
-	    //checkoutBook();
+	    checkoutBook();
 	    break;
 
 	case 'r':
-	    //returnBook();
+	    returnBook();
 	    break;
 
 	case 's':
