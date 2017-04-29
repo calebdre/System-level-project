@@ -132,7 +132,7 @@ void saveBooks(Book *books, int booksArraySize) {
 }
 
 /**
- *
+*
 * Prompts the user for input and returns what they entered. 
 * You can pass in whether a list of characters that the user
 * is allowed to enter and will keep re-prompting them until
@@ -286,13 +286,8 @@ void viewBookStatus() {
     char buffer[64];
     Book *allBooks = search(3, "", getBooks(&size), size);
 	int count = 0;
-	printf("We in VIEWBOOK\n");
-	printf("Size of allBooks %d\n", sizeof(allBooks)/sizeof(Book));
     for (int i=0; i<size-2; i++){
-    	printf("VB LOOP %d\n", i);
-    	printf("%d\n", i);
     	if (strcmp(allBooks[i].possession, "Library") == 0){
-    		printf("We checked\n");
     		printf("%s, %s, STATUS: IN\n", allBooks[i].name, allBooks[i].author);
     	} else {
     		printf("%s, %s, STATUS: IN, POSSESSION: %s\n", allBooks[i].name, allBooks[i].author, allBooks[i].possession);
