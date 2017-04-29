@@ -185,7 +185,7 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 //To return all of that index specified, pass "" (empty string) for query
 //booksToSearch: Pass in a Book array to search. If searching all books, pass getBooks(&size) as param
 
-//If no results are found, returns a single book with name "" (empty string)
+//If no results are found, returns a single book with name "empty"
 Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySize) {
 	Book *searchedBooks = malloc(sizeof(Book));
 	int count = 0;
@@ -238,8 +238,8 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySiz
 	}
 	if(count==0){
 		EMPTY_BOOK(empty);
-		empty.name = "";
-		searchedBooks[count - 1] = empty;
+		empty.name = "empty";
+		searchedBooks[0] = empty;
 	}
 	return searchedBooks;
 }
@@ -296,7 +296,9 @@ void viewBookStatus() {
     printf("View book status: ");
     int size;
     Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), size);
-    if (strcmp(Books[0].name, "") != 0){
+    printf("We about to doin\n");
+    if (strcmp(Books[0].name, "empty") != 0){
+    	printf("We doin\n");
     	int count = 0;
     	for (int i=0; i<size-1; i++){
 	    	if (strcmp(Books[i].possession, "Library") == 0){
