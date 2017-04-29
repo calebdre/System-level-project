@@ -294,14 +294,18 @@ void checkoutBook() {
 void viewBookStatus() {
     printf("View book status: ");
     int size;
-    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, NULL), getBooks(&size), size);
-	int count = 0;
-    for (int i=0; i<size-2; i++){
-    	if (strcmp(Books[i].possession, "Library") == 0){
-    		printf("%s, %s, STATUS: IN\n", Books[i].name, Books[i].author);
-    	} else {
-    		printf("%s, %s, STATUS: IN, POSSESSION: %s\n", Books[i].name, Books[i].author, Books[i].possession);
+    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), size);
+    if (strcmp(Books[0].name, "") != 0){
+    	int count = 0;
+    	for (int i=0; i<size-1; i++){
+	    	if (strcmp(Books[i].possession, "Library") == 0){
+	    		printf("%s, %s, STATUS: IN\n", Books[i].name, Books[i].author);
+	    	} else {
+	    		printf("%s, %s, STATUS: IN, POSSESSION: %s\n", Books[i].name, Books[i].author, Books[i].possession);
+	    	}
     	}
+    } else {
+    	printf("No Results\n");
     }
 }
 
