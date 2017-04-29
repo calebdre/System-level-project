@@ -184,6 +184,8 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 //fieldIndex: pass an int to return the associated value. Check below or the struct for the associated value
 //To return all of that index specified, pass "" (empty string) for query
 //booksToSearch: Pass in a Book array to search. If searching all books, pass getBooks(&size) as param
+
+//If no results are found, returns a single book with name "" (empty string)
 Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySize) {
 	Book *searchedBooks = malloc(sizeof(Book));
 	int count = 0;
@@ -200,6 +202,7 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySiz
 				break;
 			case 1:
 				if (strcmp(booksToSearch[i].name, query) == 0){
+					printf("Adding %s\n", booksToSearch[i].name);
 					addBook = 1;
 				}
 				break;
@@ -223,12 +226,20 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySiz
 					addBook = 1;
 				}
 				break;
+			default:
+				printf("Hitting def\n");
+				addBook = 0;
 	    }
 	    if (addBook != 0){
 	    	count++;
     		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
     		searchedBooks[count - 1] = booksToSearch[i];
     	}
+	}
+	if(count==0){
+		EMPTY_BOOK(empty);
+		empty.name = "";
+		searchedBooks[count - 1] = empty;
 	}
 	return searchedBooks;
 }
@@ -284,16 +295,14 @@ void checkoutBook() {
 void viewBookStatus() {
     printf("View book status: ");
     int size;
-    char buffer[64];
-    Book *allBooks = search(3, "", getBooks(&size), size);
+    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, NULL), getBooks(&size), size);
 	int count = 0;
     for (int i=0; i<size-2; i++){
-    	if (strcmp(allBooks[i].possession, "Library") == 0){
-    		printf("%s, %s, STATUS: IN\n", allBooks[i].name, allBooks[i].author);
+    	if (strcmp(Books[i].possession, "Library") == 0){
+    		printf("%s, %s, STATUS: IN\n", Books[i].name, Books[i].author);
     	} else {
-    		printf("%s, %s, STATUS: IN, POSSESSION: %s\n", allBooks[i].name, allBooks[i].author, allBooks[i].possession);
+    		printf("%s, %s, STATUS: IN, POSSESSION: %s\n", Books[i].name, Books[i].author, Books[i].possession);
     	}
-	
     }
 }
 
