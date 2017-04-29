@@ -181,13 +181,13 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 	}
     }
 }
-
-//To return all of that index, pass "" (empty string) for query
+//fieldIndex: pass an int to return the associated value. Check below or the struct for the associated value
+//To return all of that index specified, pass "" (empty string) for query
+//booksToSearch: Pass in a Book array to search. If searching all books, pass getBooks(&size) as param
 Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySize) {
 	Book *searchedBooks = malloc(sizeof(Book));
 	int count = 0;
 	for (int i=0; i<booksArraySize-1; i++){
-		printf("i is %d\n", i);
 		int addBook = 0;
 		if (strcmp(query, "") == 0){
 	    	addBook = 1;
