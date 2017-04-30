@@ -466,9 +466,6 @@ int main(void) {
     printf("Welcome to the library!");
     char allowedCharacters[] = {'a','d','o','r','s','q','u'};
     char input;
-   
-    printf("current date: %s\n", convertToString(calculateDueDate()));
-
 
     while(1) {
 	printf("\n\nWhat would you like to do?\n");
