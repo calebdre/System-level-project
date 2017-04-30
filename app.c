@@ -126,7 +126,7 @@ void saveBooks(Book *books, int booksArraySize) {
     FILE *inputfile;
     inputfile = fopen("library.csv", "w+");
     int i;
-    for (i = 0; i < booksArraySize; i++){
+    for (i = 0; i < (booksArraySize-1); i++){
 	fprintf(inputfile, "%s,%s,%s,%s,%s,%d\n", 
 	    books[i].id,
 	    books[i].name,
@@ -306,13 +306,15 @@ void checkoutBook() {
 					allBooks[i].checkedOutAt = checkoutDate;
 					char *dueDate = propmtUser("Please enter the due date: ", NULL, 0);
 					allBooks[i].dueDate = dueDate;
-					printf("book*** checked out successfully!");
-						break;
+					printf("Book checked out successfully!\n");
+					break;
 				}
 			}
 
 			if (found == false)	{
 				printf("No such book!\n");
+			}else {
+				saveBooks(allBooks, *numOfBooks);
 			}
 
 
@@ -320,7 +322,7 @@ void checkoutBook() {
 		
 		char response;
 		printf("(t) Try again\n (b) Back to main menu\n");
-		scanf("%c", &response);
+		scanf("%s", &response);
 		if (response != 't') {
 			tryAgain = false;
 		}
