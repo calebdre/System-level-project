@@ -10,7 +10,7 @@
 * in the code.
 **/
 typedef struct Book {
-    int id;
+    char *id;
     char *name;
     char *author;
     char *possession;
@@ -27,7 +27,7 @@ typedef struct Book {
 * EMPTY_BOOK(book)
 * book.name = "book name"; // the book variable now exists
 **/
-#define EMPTY_BOOK(X) Book X = { .id = -1, .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = 0 };
+#define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = 0 };
 
 /**
 *
@@ -60,7 +60,7 @@ Book* getBooks(int *booksCountArg) {
 		while((token = strsep(&copy, ","))) {
 		    switch (index) {
 			case 0:
-				book.id = (int) strtol(token, NULL, 10);
+				book.id = token; 
 				break;
 			case 1:
 				book.name = token;
@@ -119,7 +119,8 @@ void saveBooks(Book *books, int booksArraySize) {
     inputfile = fopen("library.csv", "w+");
     int i;
     for (i = 0; i < booksArraySize; i++){
-	fprintf(inputfile, "%d,%s,%s,%s,%s,%d\n", 
+	if (books[i].id == NULL) continue;
+	fprintf(inputfile, "%s,%s,%s,%s,%s,%d\n", 
 	    books[i].id,
 	    books[i].name,
 	    books[i].author,
@@ -129,7 +130,6 @@ void saveBooks(Book *books, int booksArraySize) {
     }
 
     fclose(inputfile);
-    free(books);
 }
 
 /**
@@ -166,7 +166,7 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 		}
 	    }
 	   
-	    char *copy = malloc(strlen(input));
+	    char *copy = malloc(strlen(input) + 1);
 	    strcpy(copy, input);
 	    return copy;
 	} else {
@@ -189,11 +189,11 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 //booksToSearch: Pass in a Book array to search. If searching all books, pass getBooks(&size) as param
 
 //If no results are found, returns a single book with name "empty"
-Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySize_pntr) {
+Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySize_pntr, int *foundIndex) {
 	Book *searchedBooks = malloc(sizeof(Book));
 	int booksArraySize = *booksArraySize_pntr;
 	int count = 0;
-	int queryToInt = (int) strtol(query, NULL, 10);
+
 	for (int i=0; i<booksArraySize-1; i++){
 		int addBook = 0;
 		if (strcmp(query, "") == 0){
@@ -201,7 +201,7 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySi
 	    }
 	    switch(fieldIndex){
 	    	        case 0:
-	    		    if (queryToInt == booksToSearch[i].id){
+			   if (strcmp(booksToSearch[i].id, query) == 0){
 	    			addBook = 1;
 	    		    }
 			    break;
@@ -233,6 +233,9 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySi
 	    	count++;
     		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
     		searchedBooks[count - 1] = booksToSearch[i];
+		if (foundIndex != NULL) {
+		    *foundIndex = i;
+		}
     	}
 	}
 	if(count==0){
@@ -250,22 +253,32 @@ void addBook() {
     printf("add a book");
 }
 
+void removeBookFromArray(Book *books, int index, int arrSize) {
+    int i;
+    for (i = index; i < arrSize - 1; i++) {	    
+	books[i] = books[i + 1];
+    }
+    books = realloc(books, (arrSize - 1) * sizeof(Book));
+}
+
 void deleteBook() {
      int numOfbooks;
      Book *books = getBooks(&numOfbooks);
      while(1) {
         char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
-        Book *searchResult = search(0, bookId, books, &numOfbooks); // todo: integrate search
+	int searchedItems = numOfbooks;
+	int bookIndex; 
+        Book *searchResult = search(0, bookId, books, &searchedItems, &bookIndex);
+
         if (searchResult != NULL && strcmp(searchResult->name, "empty") != 0) {
- 	    books[searchResult->id] = books[numOfbooks - 1];
-  	    books = realloc(books, sizeof(Book) * (numOfbooks - 1));
+	    removeBookFromArray(books, bookIndex, numOfbooks);
 	    numOfbooks -= 1;
 	    saveBooks(books, numOfbooks);
+	    printf("\n%s was deleted!\n\n", searchResult->name);
  	} else {
-    	    printf("No such book!\n");
+    	    printf("\nNo such book!\n\n");
  	}
-	
-	printf("%s was deleted!\n\n", searchResult->name);
+
  	char allowedChars[] = {'t','b'};
  	char *response = propmtUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
  	if (response[0] == 't') {
@@ -307,7 +320,7 @@ void checkoutBook() {
 
 void viewBookStatus() {
     int size;
-    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), &size);
+    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), &size, NULL);
     if (strcmp(Books[0].name, "empty") != 0){
     	int count = 0;
     	for (int i=0; i<size-1; i++){
@@ -324,11 +337,11 @@ void viewBookStatus() {
 
 void viewBooksByAuthor() {
     int size;
-    Book *Books = search(2, propmtUser("View book by author (enter author name): ", NULL, 0), getBooks(&size), &size);
+    Book *Books = search(2, propmtUser("View book by author (enter author name): ", NULL, 0), getBooks(&size), &size, NULL);
     if (strcmp(Books[0].name, "empty") != 0){
 		int count = 0;
 	    for (int i=0; i<size; i++){
-	    	printf("%d, %s\n", Books[i].id, Books[i].name);
+	    	printf("%s, %s\n", Books[i].id, Books[i].name);
 	    }
 	} else {
 		printf("No Results\n");
@@ -338,7 +351,7 @@ void viewBooksByAuthor() {
 
 void viewCheckedOutBooksByUser() {
     int size;
-    Book *Books = search(3, propmtUser("View books checked out by user (enter username): ", NULL, 0), getBooks(&size), &size);
+    Book *Books = search(3, propmtUser("View books checked out by user (enter username): ", NULL, 0), getBooks(&size), &size, NULL);
     if (strcmp(Books[0].name, "empty") != 0){
     	int count = 0;
     	for (int i=0; i<size-1; i++){
