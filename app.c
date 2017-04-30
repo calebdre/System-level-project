@@ -389,10 +389,31 @@ void executeAction(char input) {
     }
 }
 
+char* convertToString(int timestamp) {
+   char time[11];
+   char charStamp[20];
+
+   sprintf(charStamp, "%d", timestamp);
+   time_t t = (time_t) atoi(charStamp);
+   struct tm *p = localtime(&t);
+
+  strftime(time, sizeof(time) -1, "%m/%d/%Y", p);
+
+   return strdup(time);
+}
+
+
+int calculateDueDate() {
+    return ((int) time(NULL)) + (604800 * 2); // 604800 = number of seconds in a week
+}
+
 int main(void) {
     printf("Welcome to the library!");
     char allowedCharacters[] = {'a','d','o','r','s','q','u'};
     char input;
+   
+    printf("current date: %s\n", convertToString(calculateDueDate()));
+
 
     while(1) {
 	printf("\n\nWhat would you like to do?\n");
