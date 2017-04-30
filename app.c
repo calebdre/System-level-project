@@ -188,12 +188,10 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 
 //If no results are found, returns a single book with name "empty"
 Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySize_pntr) {
-	printf("THINGS BRO\n");
 	Book *searchedBooks = malloc(sizeof(Book));
 	int booksArraySize = *booksArraySize_pntr;
 	int count = 0;
 	for (int i=0; i<booksArraySize-1; i++){
-		printf("we rollin %d\n", i);
 		int addBook = 0;
 		if (strcmp(query, "") == 0){
 	    	addBook = 1;
@@ -226,7 +224,6 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySi
 				}
 				break;
 			default:
-				printf("Hitting def\n");
 				addBook = 0;
 	    } 
 	    if (addBook != 0){
@@ -337,7 +334,6 @@ void viewBooksByAuthor() {
 Book* viewCheckedOutBooksByUser(const char *searchUser) {
     int size;
     Book *Books = search(3, propmtUser("View books checked out by user (enter username): ", NULL, 0), getBooks(&size), &size);
-    printf("Things\n");
     if (strcmp(Books[0].name, "empty") != 0){
     	int count = 0;
     	for (int i=0; i<size-1; i++){
