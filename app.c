@@ -188,10 +188,12 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 
 //If no results are found, returns a single book with name "empty"
 Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySize_pntr) {
+	printf("THINGS BRO\n");
 	Book *searchedBooks = malloc(sizeof(Book));
 	int booksArraySize = *booksArraySize_pntr;
 	int count = 0;
 	for (int i=0; i<booksArraySize-1; i++){
+		printf("we rollin %d\n", i);
 		int addBook = 0;
 		if (strcmp(query, "") == 0){
 	    	addBook = 1;
@@ -303,10 +305,8 @@ void checkoutBook() {
 
 void viewBookStatus() {
     int size;
-    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), size);
-    printf("We about to doin\n");
+    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), &size);
     if (strcmp(Books[0].name, "empty") != 0){
-    	printf("We doin\n");
     	int count = 0;
     	for (int i=0; i<size-1; i++){
 	    	if (strcmp(Books[i].possession, "Library") == 0){
@@ -323,11 +323,9 @@ void viewBookStatus() {
 void viewBooksByAuthor() {
     int size;
     Book *Books = search(2, propmtUser("View book by author (enter author name): ", NULL, 0), getBooks(&size), &size);
-    printf("%d\n", size);
     if (strcmp(Books[0].name, "empty") != 0){
 		int count = 0;
 	    for (int i=0; i<size; i++){
-	    	printf("%d\n", i);
 	    	printf("%s, %s\n", Books[i].id, Books[i].name);
 	    }
 	} else {
@@ -337,26 +335,17 @@ void viewBooksByAuthor() {
 }
 
 Book* viewCheckedOutBooksByUser(const char *searchUser) {
-    printf("view checked out books by user: \n");
     int size;
-    char buffer[64];
-    Book *allBooks = getBooks(&size);
-	if ((strcmp(searchUser, "ask_user") == 0)){
-		scanf("%s", buffer);
-	} else {
-		strcpy(buffer, searchUser);
-	}
-	Book *searchedBooks = malloc(sizeof(Book));
-	int count = 0;
-    for (int i=0; i<size-1; i++){
-    	if (strcmp(allBooks[i].possession, buffer) == 0){
-    		printf("%s, %s\n", allBooks[i].name, allBooks[i].author);
-    		count++;
-    		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
-    		searchedBooks[size - 1] = allBooks[i];
+    Book *Books = search(3, propmtUser("View books checked out by user (enter username): ", NULL, 0), getBooks(&size), &size);
+    printf("Things\n");
+    if (strcmp(Books[0].name, "empty") != 0){
+    	int count = 0;
+    	for (int i=0; i<size-1; i++){
+	    	printf("%s, %s, STATUS: IN\n", Books[i].name, Books[i].author);
     	}
+    } else {
+    	printf("No Results\n");
     }
-    return searchedBooks;
 }
 
 void executeAction(char input) {
