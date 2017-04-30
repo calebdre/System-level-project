@@ -331,7 +331,7 @@ void viewBooksByAuthor() {
 	
 }
 
-Book* viewCheckedOutBooksByUser(const char *searchUser) {
+void viewCheckedOutBooksByUser(const char *searchUser) {
     int size;
     Book *Books = search(3, propmtUser("View books checked out by user (enter username): ", NULL, 0), getBooks(&size), &size);
     if (strcmp(Books[0].name, "empty") != 0){
