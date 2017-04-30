@@ -222,11 +222,6 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySiz
 					addBook = 1;
 				}
 				break;
-			case 5:
-				//if (strcmp(booksToSearch[i].dueDate, query) == 0){
-				//	addBook = 1;
-				//}
-				break;
 			default:
 				printf("Hitting def\n");
 				addBook = 0;
