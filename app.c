@@ -337,7 +337,7 @@ Book* viewCheckedOutBooksByUser(const char *searchUser) {
     if (strcmp(Books[0].name, "empty") != 0){
     	int count = 0;
     	for (int i=0; i<size-1; i++){
-	    	printf("%s, %s, STATUS: IN\n", Books[i].name, Books[i].author);
+	    	printf("%s, %s\n", Books[i].name, Books[i].author);
     	}
     } else {
     	printf("No Results\n");
