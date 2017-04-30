@@ -18,6 +18,14 @@ typedef struct Book {
 } Book;
 
 /**
+* Define boolean type
+**/
+typedef int bool;
+#define true 1
+#define false 0
+
+
+/**
 * Use this if you don't have all of the information
 * to create a Book struct yet but want to build up
 * the data structure. 
@@ -275,6 +283,51 @@ void addBook() {
 
 void checkoutBook() {
     printf("checkout a book");
+	int numofchekout = 0;
+	int *numOfBooks = malloc(sizeof(int));
+	Book *allBooks = getBooks(numOfBooks);
+	bool tryAgain = true;
+
+	do{
+		bool found = false;
+		char *userName = propmtUser("Enter the user name:", NULL, 0);
+
+		for (int i = 0; i < *numOfBooks - 1; i++) {
+			if (strcmp(allBooks[i].possession, userName) == 0) {
+				numofchekout++;
+			}
+		}
+
+		if (numofchekout < 3) {
+			char *bookId = propmtUser("Please enter the book ID: ", NULL, 0);
+			for (int i = 0; i < *numOfBooks - 1; i++) {
+				if (strcmp(allBooks[i].id, bookId) == 0) {
+					found = true;
+					allBooks[i].possession = userName;
+					char *checkoutDate = propmtUser("Please enter the check out date: ", NULL, 0);
+					allBooks[i].checkedOutAt = checkoutDate;
+					char *dueDate = propmtUser("Please enter the due date: ", NULL, 0);
+					allBooks[i].dueDate = dueDate;
+					printf("book*** checked out successfully!");
+						break;
+				}
+			}
+
+			if (found == false)	{
+				printf("No such book!\n");
+			}
+
+
+		}
+		
+		char response;
+		printf("(t) Try again\n (b) Back to main menu\n");
+		scanf("%c", &response);
+		if (response != 't') {
+			tryAgain = false;
+		}
+		
+	} while (tryAgain == true);
 }
 
  void returnBook() {
