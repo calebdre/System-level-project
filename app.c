@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 /**
 * This is a compact representation of the data
@@ -14,7 +15,7 @@ typedef struct Book {
     char *author;
     char *possession;
     char *checkedOutAt;
-    char *dueDate;
+    int dueDate;
 } Book;
 
 /**
@@ -26,7 +27,7 @@ typedef struct Book {
 * EMPTY_BOOK(book)
 * book.name = "book name"; // the book variable now exists
 **/
-#define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = "none" };
+#define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = 0 };
 
 /**
 *
@@ -74,7 +75,7 @@ Book* getBooks(int *booksCountArg) {
 				book.checkedOutAt = token;
 				break;
 			case 5:
-				book.dueDate = token;
+				book.dueDate = (int) strtol(token, NULL, 10);
 				break;
 		    }
 
@@ -118,7 +119,7 @@ void saveBooks(Book *books, int booksArraySize) {
     inputfile = fopen("library.csv", "w+");
     int i;
     for (i = 0; i < booksArraySize; i++){
-	fprintf(inputfile, "%s,%s,%s,%s,%s,%s\n", 
+	fprintf(inputfile, "%s,%s,%s,%s,%s,%d\n", 
 	    books[i].id,
 	    books[i].name,
 	    books[i].author,
@@ -222,11 +223,6 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySi
 					addBook = 1;
 				}
 				break;
-			case 5:
-				if (strcmp(booksToSearch[i].dueDate, query) == 0){
-					addBook = 1;
-				}
-				break;
 			default:
 				printf("Hitting def\n");
 				addBook = 0;
@@ -281,18 +277,28 @@ void checkoutBook() {
 }
 
  void returnBook() {
-	 printf("return book");
-/*     int *numOfBooks;
-     Book *books = getBooks(numOfBooks);
+     int numOfBooks;
+     Book *books = getBooks(&numOfBooks);
      while(1) {
- 	char *bookId = promptUser("Please enter the book ID", NULL, 0);
+ 	char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
  	Book *searchResult = NULL; // todo: integrate search
  	if (searchResult == NULL) {
- 	    char *currentDate = promptUser("Please enter the current date (mm/dd/yyy)\n", NULL, 0);
+	    int currentTimestamp = (int) time(NULL);
+	    if (currentTimestamp >= searchResult->dueDate) {
+		printf("Your fine is $9000000\n");
+	    }
+	    searchResult->possession = "Library";
+	    printf("%s return successful!", searchResult->name);
+	}
 
- 	}
+ 	char allowedChars[] = {'t','b'};
+ 	char *response = propmtUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
+ 	if (response[0] == 't') {
+ 	    continue;
+ 	} else {
+ 	    break;
+	}
      }
-*/
 }
 
 void viewBookStatus() {
