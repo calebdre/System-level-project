@@ -14,7 +14,7 @@ typedef struct Book {
     char *name;
     char *author;
     char *possession;
-    char *checkedOutAt;
+    int checkedOutAt;
     int dueDate;
 } Book;
 
@@ -27,7 +27,7 @@ typedef struct Book {
 * EMPTY_BOOK(book)
 * book.name = "book name"; // the book variable now exists
 **/
-#define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = 0 };
+#define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = 0, .dueDate = 0 };
 
 /**
 *
@@ -72,7 +72,7 @@ Book* getBooks(int *booksCountArg) {
 				book.possession = token;
 				break;
 			case 4:
-				book.checkedOutAt = token;
+				book.checkedOutAt = (int) strtol(token, NULL, 10);;
 				break;
 			case 5:
 				book.dueDate = (int) strtol(token, NULL, 10);
@@ -120,7 +120,7 @@ void saveBooks(Book *books, int booksArraySize) {
     int i;
     for (i = 0; i < booksArraySize; i++){
 	if (books[i].id == NULL) continue;
-	fprintf(inputfile, "%s,%s,%s,%s,%s,%d\n", 
+	fprintf(inputfile, "%s,%s,%s,%s,%d,%d\n", 
 	    books[i].id,
 	    books[i].name,
 	    books[i].author,
@@ -218,11 +218,6 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySi
 				break;
 			case 3:
 				if (strcmp(booksToSearch[i].possession, query) == 0){
-					addBook = 1;
-				}
-				break;
-			case 4:
-				if (strcmp(booksToSearch[i].checkedOutAt, query) == 0){
 					addBook = 1;
 				}
 				break;
