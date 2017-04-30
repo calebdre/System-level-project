@@ -367,11 +367,11 @@ void executeAction(char input) {
 	    break;
 
 	case 'q':
-	    viewBooksByAuthor("ask_user");
+	    viewBooksByAuthor();
 	    break;
 
 	case 'u':
-	    viewCheckedOutBooksByUser("ask_user");
+	    viewCheckedOutBooksByUser();
 	    break;
     }
 }
