@@ -14,7 +14,7 @@ typedef struct Book {
     char *name;
     char *author;
     char *possession;
-    char *checkedOutAt;
+    int checkedOutAt;
     int dueDate;
 } Book;
 
@@ -35,7 +35,7 @@ typedef int bool;
 * EMPTY_BOOK(book)
 * book.name = "book name"; // the book variable now exists
 **/
-#define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = "none", .dueDate = 0 };
+#define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = 0, .dueDate = 0 };
 
 /**
 *
@@ -68,7 +68,7 @@ Book* getBooks(int *booksCountArg) {
 		while((token = strsep(&copy, ","))) {
 		    switch (index) {
 			case 0:
-				book.id = token;
+				book.id = token; 
 				break;
 			case 1:
 				book.name = token;
@@ -80,7 +80,7 @@ Book* getBooks(int *booksCountArg) {
 				book.possession = token;
 				break;
 			case 4:
-				book.checkedOutAt = token;
+				book.checkedOutAt = (int) strtol(token, NULL, 10);;
 				break;
 			case 5:
 				book.dueDate = (int) strtol(token, NULL, 10);
@@ -127,7 +127,8 @@ void saveBooks(Book *books, int booksArraySize) {
     inputfile = fopen("library.csv", "w+");
     int i;
     for (i = 0; i < (booksArraySize-1); i++){
-	fprintf(inputfile, "%s,%s,%s,%s,%s,%d\n", 
+		if (books[i].id == NULL) continue;
+	    fprintf(inputfile, "%s,%s,%s,%s,%s,%d\n", 
 	    books[i].id,
 	    books[i].name,
 	    books[i].author,
@@ -137,7 +138,6 @@ void saveBooks(Book *books, int booksArraySize) {
     }
 
     fclose(inputfile);
-    free(books);
 }
 
 /**
@@ -174,7 +174,9 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 		}
 	    }
 	   
-	    return strdup(input);
+	    char *copy = malloc(strlen(input) + 1);
+	    strcpy(copy, input);
+	    return copy;
 	} else {
 	    char input[2] = {'\0','\0'};
 	    printf("%s\n", prompt);
@@ -195,21 +197,22 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 //booksToSearch: Pass in a Book array to search. If searching all books, pass getBooks(&size) as param
 
 //If no results are found, returns a single book with name "empty"
-Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySize_pntr) {
+Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySize_pntr, int *foundIndex) {
 	Book *searchedBooks = malloc(sizeof(Book));
 	int booksArraySize = *booksArraySize_pntr;
 	int count = 0;
+
 	for (int i=0; i<booksArraySize-1; i++){
 		int addBook = 0;
 		if (strcmp(query, "") == 0){
 	    	addBook = 1;
 	    }
 	    switch(fieldIndex){
-	    	case 0:
-	    		if (strcmp(booksToSearch[i].id, query) == 0){
+	    	        case 0:
+			   if (strcmp(booksToSearch[i].id, query) == 0){
 	    			addBook = 1;
-	    		}
-				break;
+	    		    }
+			    break;
 			case 1:
 				if (strcmp(booksToSearch[i].name, query) == 0){
 					printf("Adding %s\n", booksToSearch[i].name);
@@ -226,11 +229,6 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySi
 					addBook = 1;
 				}
 				break;
-			case 4:
-				if (strcmp(booksToSearch[i].checkedOutAt, query) == 0){
-					addBook = 1;
-				}
-				break;
 			default:
 				addBook = 0;
 	    } 
@@ -238,6 +236,9 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySi
 	    	count++;
     		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
     		searchedBooks[count - 1] = booksToSearch[i];
+		if (foundIndex != NULL) {
+		    *foundIndex = i;
+		}
     	}
 	}
 	if(count==0){
@@ -255,20 +256,32 @@ void addBook() {
     printf("add a book");
 }
 
- void deleteBook() {
+void removeBookFromArray(Book *books, int index, int arrSize) {
+    int i;
+    for (i = index; i < arrSize - 1; i++) {	    
+	books[i] = books[i + 1];
+    }
+    books = realloc(books, (arrSize - 1) * sizeof(Book));
+}
+
+void deleteBook() {
      int numOfbooks;
      Book *books = getBooks(&numOfbooks);
      while(1) {
         char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
- 	int *bookIndex;
-        Book *searchResult = NULL; //search(0, bookId, books, *numOfbooks); // todo: integrate search
-        if (searchResult != NULL) {
- 	    books[*bookIndex] = books[numOfbooks - 1];
-  	    books = realloc(books, sizeof(Book) * (numOfbooks - 1));
+	int searchedItems = numOfbooks;
+	int bookIndex; 
+        Book *searchResult = search(0, bookId, books, &searchedItems, &bookIndex);
+
+        if (searchResult != NULL && strcmp(searchResult->name, "empty") != 0) {
+	    removeBookFromArray(books, bookIndex, numOfbooks);
+	    numOfbooks -= 1;
+	    saveBooks(books, numOfbooks);
+	    printf("\n%s was deleted!\n\n", searchResult->name);
  	} else {
-    	    printf("No such book!\n");
+    	    printf("\nNo such book!\n\n");
  	}
-	
+
  	char allowedChars[] = {'t','b'};
  	char *response = propmtUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
  	if (response[0] == 't') {
@@ -357,7 +370,7 @@ void checkoutBook() {
 
 void viewBookStatus() {
     int size;
-    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), &size);
+    Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), &size, NULL);
     if (strcmp(Books[0].name, "empty") != 0){
     	int count = 0;
     	for (int i=0; i<size-1; i++){
@@ -374,7 +387,7 @@ void viewBookStatus() {
 
 void viewBooksByAuthor() {
     int size;
-    Book *Books = search(2, propmtUser("View book by author (enter author name): ", NULL, 0), getBooks(&size), &size);
+    Book *Books = search(2, propmtUser("View book by author (enter author name): ", NULL, 0), getBooks(&size), &size, NULL);
     if (strcmp(Books[0].name, "empty") != 0){
 		int count = 0;
 	    for (int i=0; i<size; i++){
@@ -388,7 +401,7 @@ void viewBooksByAuthor() {
 
 void viewCheckedOutBooksByUser() {
     int size;
-    Book *Books = search(3, propmtUser("View books checked out by user (enter username): ", NULL, 0), getBooks(&size), &size);
+    Book *Books = search(3, propmtUser("View books checked out by user (enter username): ", NULL, 0), getBooks(&size), &size, NULL);
     if (strcmp(Books[0].name, "empty") != 0){
     	int count = 0;
     	for (int i=0; i<size-1; i++){
