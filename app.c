@@ -186,8 +186,9 @@ char* propmtUser(char *prompt, char *allowedChars, int allowedCharsSize) {
 //booksToSearch: Pass in a Book array to search. If searching all books, pass getBooks(&size) as param
 
 //If no results are found, returns a single book with name "empty"
-Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySize) {
+Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySize_pntr) {
 	Book *searchedBooks = malloc(sizeof(Book));
+	int booksArraySize = *booksArraySize_pntr;
 	int count = 0;
 	for (int i=0; i<booksArraySize-1; i++){
 		int addBook = 0;
@@ -229,7 +230,7 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySiz
 			default:
 				printf("Hitting def\n");
 				addBook = 0;
-	    }
+	    } 
 	    if (addBook != 0){
 	    	count++;
     		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
@@ -240,6 +241,8 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int booksArraySiz
 		EMPTY_BOOK(empty);
 		empty.name = "empty";
 		searchedBooks[0] = empty;
+	} else {
+		*booksArraySize_pntr = count;
 	}
 	return searchedBooks;
 }
@@ -293,7 +296,6 @@ void checkoutBook() {
 }
 
 void viewBookStatus() {
-    printf("View book status: ");
     int size;
     Book *Books = search(1, propmtUser("View book status of (enter book name): ", NULL, 0), getBooks(&size), size);
     printf("We about to doin\n");
@@ -312,26 +314,20 @@ void viewBookStatus() {
     }
 }
 
-Book* viewBooksByAuthor(const char *searchAuthor) {
-    printf("view books by author: ");
+void viewBooksByAuthor() {
     int size;
-    char buffer[64];
-    Book *allBooks = getBooks(&size);
-	if ((strcmp(searchAuthor, "ask_user") == 0)){
-		scanf("%s", buffer);
+    Book *Books = search(2, propmtUser("View book by author (enter author name): ", NULL, 0), getBooks(&size), &size);
+    printf("%d\n", size);
+    if (strcmp(Books[0].name, "empty") != 0){
+		int count = 0;
+	    for (int i=0; i<size; i++){
+	    	printf("%d\n", i);
+	    	printf("%s, %s\n", Books[i].id, Books[i].name);
+	    }
 	} else {
-		strcpy(buffer, searchAuthor);
+		printf("No Results\n");
 	}
-	Book *searchedBooks = malloc(sizeof(Book));
-	int count = 0;
-    for (int i=0; i<size-1; i++){
-    	if (strcmp(allBooks[i].author, buffer) == 0){
-    		count++;
-    		searchedBooks = realloc(searchedBooks, sizeof(Book) * count);
-    		searchedBooks[size - 1] = allBooks[i];
-    	}
-    }
-    return searchedBooks;
+	
 }
 
 Book* viewCheckedOutBooksByUser(const char *searchUser) {
