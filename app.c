@@ -37,7 +37,6 @@ typedef int bool;
 **/
 #define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = 0, .dueDate = 0 };
 
-
 int calculateDueDate() {
     return ((int) time(NULL)) + (604800 * 2); // 604800 = number of seconds in a week
 }
@@ -53,7 +52,6 @@ char* convertToString(int timestamp) {
   strftime(time, sizeof(time) -1, "%m/%d/%Y", p);
   return strdup(time);
 }
-
 
 /**
 *
@@ -285,7 +283,8 @@ void removeBookFromArray(Book *books, int index, int arrSize) {
 void deleteBook() {
      int numOfbooks;
      Book *books = getBooks(&numOfbooks);
-     while(1) {
+     int willContinue = 1;
+     while(willContinue) {
         char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
 	int searchedItems = numOfbooks;
 	int bookIndex; 
@@ -300,13 +299,13 @@ void deleteBook() {
     	    printf("\nNo such book!\n\n");
  	}
 
- 	char allowedChars[] = {'t','b'};
- 	char *response = propmtUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
- 	if (response[0] == 't') {
- 	    continue;
- 	} else {
- 	    break;
- 	}
+	char response;
+	printf("(t) Try again\n(b) Back to main menu\n");
+	scanf("%c", &response);
+	scanf("%c", &response);
+	if (response == 'b') {
+            willContinue = 0;
+	}
      }
  }
 
@@ -362,9 +361,10 @@ void checkoutBook() {
 }
 
  void returnBook() {
+     int willContinue = 1;
      int numOfBooks;
      Book *books = getBooks(&numOfBooks);
-     while(1) {
+     while(willContinue) {
  	char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
 	int searchedItems = numOfBooks;
  	int bookIndex;
@@ -388,13 +388,14 @@ void checkoutBook() {
             printf("\nNo such book!\n\n");
 	 }
  	char allowedChars[] = {'t','b'};
- 	char *response = propmtUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
- 	if (response[0] == 't') {
- 	    continue;
- 	} else {
- 	    break;
+	char response;
+ 	printf("(t) Try again\n(b) Back to main menu\n");
+	scanf("%c", &response);
+	scanf("%c", &response);
+	if (response == 'b') {
+	    willContinue = 0;
 	}
-     }
+    }
 }
 
 void viewBookStatus() {
