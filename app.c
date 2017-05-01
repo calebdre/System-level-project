@@ -374,7 +374,11 @@ void checkoutBook() {
 			char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
 			for (int i = 0; i < *numOfBooks - 1; i++) {
 				if (strcmp(allBooks[i].id, bookId) == 0) {
-					found = true;
+					if(strcmp(allBooks[i].possession, "Library") != 0) {
+					    printf("\nThat book is already checked out - please try again on %s\n\n", convertToString(allBooks[i].dueDate));
+					    found = true;
+					    break;
+					}
 					allBooks[i].possession = userName;
 					allBooks[i].checkedOutAt = (int) time(NULL);
 
