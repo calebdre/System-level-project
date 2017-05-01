@@ -366,16 +366,27 @@ void checkoutBook() {
      Book *books = getBooks(&numOfBooks);
      while(1) {
  	char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
- 	Book *searchResult = NULL; // todo: integrate search
- 	if (searchResult == NULL) {
-	    int currentTimestamp = (int) time(NULL);
-	    if (currentTimestamp >= searchResult->dueDate) {
-		printf("Your fine is $9000000\n");
-	    }
-	    searchResult->possession = "Library";
-	    printf("%s return successful!", searchResult->name);
-	}
+	int searchedItems = numOfBooks;
+ 	int bookIndex;
+	Book *searchResult = search(0, bookId, books, &searchedItems, &bookIndex);
+	
+ 	if (searchResult != NULL && strcmp(searchResult->name, "empty") != 0) {
+	    if (strcmp(searchResult->possession, "Library") == 0) {
+		printf("\nThis book has not been lent out.\n\n");
+	    } else {
+		int currentTimestamp = (int) time(NULL);
+	        if (currentTimestamp >= searchResult->dueDate) {
+	   	   printf("\nThis book is late. Your fine is $9000000!");
+	        }
 
+	        searchResult->possession = "Library";
+	        printf("\nThanks for your payment. %s return successful!\n\n", searchResult->name);
+		books[bookIndex] = *searchResult;
+		saveBooks(books, numOfBooks);
+	    }
+	 } else {
+            printf("\nNo such book!\n\n");
+	 }
  	char allowedChars[] = {'t','b'};
  	char *response = propmtUser("(t) Try again\n(b) Back to main menu\n", allowedChars, 2);
  	if (response[0] == 't') {
