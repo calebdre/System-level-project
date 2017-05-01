@@ -96,7 +96,7 @@ Book* getBooks(int *booksCountArg) {
 				book.possession = token;
 				break;
 			case 4:
-				book.checkedOutAt = (int) strtol(token, NULL, 10);;
+				book.checkedOutAt = (int) strtol(token, NULL, 10);
 				break;
 			case 5:
 				book.dueDate = (int) strtol(token, NULL, 10);
@@ -269,7 +269,52 @@ Book* search(int fieldIndex, char *query, Book *booksToSearch, int *booksArraySi
 
 
 void addBook() {
-    printf("add a book");
+    char title[30];
+    char author[30];
+    char id[10];
+
+    int numOfBooks;
+    Book *books = getBooks(&numOfBooks);
+    int willContinue = 1;
+
+    while (willContinue) {
+	    int latestId = (int) strtol(books[numOfBooks -2].id, NULL, 10);
+	    int newBookId = latestId + 1;
+	    sprintf(id, "%d", newBookId);
+
+	    int c;
+	    while ( (c = getchar()) != EOF && c != '\n') { }
+
+	    printf("\nWhat is the title of the book?\n");
+	    fgets(title, 30, stdin);
+	    int i;
+	    for (i = 0; i <30;i++){
+		if (title[i] == '\n') title[i] = '\0';
+	    }
+
+	    printf("\nWho is the author of %s?\n", title);
+	    fgets(author, 30, stdin);
+	    
+	    for (i = 0; i <30;i++){
+		if (author[i] == '\n') author[i] = '\0';
+	    }
+
+	    Book newBook = {.id = id, .name = title, .author = author, .possession = "Library", .checkedOutAt = 0, .dueDate = 0 };
+
+	    books = realloc(books, sizeof(Book) * (numOfBooks + 1));
+	    books[numOfBooks - 1] = newBook;
+	    numOfBooks += 1;
+
+	    saveBooks(books, numOfBooks);
+	    printf("\n%s was added successfully!\n\n", title);
+
+	    char response;
+	    printf("(t) Try again\n(b) Back to main menu\n");
+	    scanf("%c", &response);
+	    if (response == 'b'){
+		willContinue = 0;
+	    }
+    }
 }
 
 void removeBookFromArray(Book *books, int index, int arrSize) {
@@ -317,7 +362,7 @@ void checkoutBook() {
 
 	do{
 		bool found = false;
-		char *userName = propmtUser("Enter the user name:", NULL, 0);
+		char *userName = propmtUser("Enter the user name:\n", NULL, 0);
 
 		for (int i = 0; i < *numOfBooks - 1; i++) {
 			if (strcmp(allBooks[i].possession, userName) == 0) {
@@ -326,7 +371,7 @@ void checkoutBook() {
 		}
 
 		if (numofchekout < 3) {
-			char *bookId = propmtUser("Please enter the book ID: ", NULL, 0);
+			char *bookId = propmtUser("Please enter the book ID:\n", NULL, 0);
 			for (int i = 0; i < *numOfBooks - 1; i++) {
 				if (strcmp(allBooks[i].id, bookId) == 0) {
 					found = true;
@@ -346,12 +391,10 @@ void checkoutBook() {
 			}else {
 				saveBooks(allBooks, *numOfBooks);
 			}
-
-
 		}
 		
 		char response;
-		printf("(t) Try again\n (b) Back to main menu\n");
+		printf("(t) Try again\n(b) Back to main menu\n");
 		scanf("%s", &response);
 		if (response != 't') {
 			tryAgain = false;
