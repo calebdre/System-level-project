@@ -522,7 +522,7 @@ void executeAction(char input) {
 }
 
 int main(void) {
-    printf("Welcome to the library!");
+    printf("Welcome to the Long Library!");
     char allowedCharacters[] = {'a','d','o','r','s','q','u'};
     char input;
 
