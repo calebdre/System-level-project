@@ -37,6 +37,24 @@ typedef int bool;
 **/
 #define EMPTY_BOOK(X) Book X = { .id = "0", .name = "none", .author = "none", .possession = "none", .checkedOutAt = 0, .dueDate = 0 };
 
+
+int calculateDueDate() {
+    return ((int) time(NULL)) + (604800 * 2); // 604800 = number of seconds in a week
+}
+
+char* convertToString(int timestamp) {
+   char time[11];
+   char charStamp[20];
+
+   sprintf(charStamp, "%d", timestamp);
+   time_t t = (time_t) atoi(charStamp);
+   struct tm *p = localtime(&t);
+
+  strftime(time, sizeof(time) -1, "%m/%d/%Y", p);
+  return strdup(time);
+}
+
+
 /**
 *
 * Opens library.csv (included with the repo) and parses each row
@@ -128,7 +146,7 @@ void saveBooks(Book *books, int booksArraySize) {
     int i;
     for (i = 0; i < (booksArraySize-1); i++){
 		if (books[i].id == NULL) continue;
-	    fprintf(inputfile, "%s,%s,%s,%s,%s,%d\n", 
+	    fprintf(inputfile, "%s,%s,%s,%s,%d,%d\n", 
 	    books[i].id,
 	    books[i].name,
 	    books[i].author,
@@ -293,7 +311,6 @@ void deleteBook() {
  }
 
 void checkoutBook() {
-    printf("checkout a book");
 	int numofchekout = 0;
 	int *numOfBooks = malloc(sizeof(int));
 	Book *allBooks = getBooks(numOfBooks);
@@ -315,11 +332,12 @@ void checkoutBook() {
 				if (strcmp(allBooks[i].id, bookId) == 0) {
 					found = true;
 					allBooks[i].possession = userName;
-					char *checkoutDate = propmtUser("Please enter the check out date: ", NULL, 0);
-					allBooks[i].checkedOutAt = checkoutDate;
-					char *dueDate = propmtUser("Please enter the due date: ", NULL, 0);
+					allBooks[i].checkedOutAt = (int) time(NULL);
+
+					int dueDate = calculateDueDate();
+					printf("\nYour due date is: %s\n", convertToString(dueDate));
 					allBooks[i].dueDate = dueDate;
-					printf("Book checked out successfully!\n");
+					printf("Book checked out successfully!\n\n");
 					break;
 				}
 			}
@@ -442,24 +460,6 @@ void executeAction(char input) {
 	    viewCheckedOutBooksByUser();
 	    break;
     }
-}
-
-char* convertToString(int timestamp) {
-   char time[11];
-   char charStamp[20];
-
-   sprintf(charStamp, "%d", timestamp);
-   time_t t = (time_t) atoi(charStamp);
-   struct tm *p = localtime(&t);
-
-  strftime(time, sizeof(time) -1, "%m/%d/%Y", p);
-
-   return strdup(time);
-}
-
-
-int calculateDueDate() {
-    return ((int) time(NULL)) + (604800 * 2); // 604800 = number of seconds in a week
 }
 
 int main(void) {
